@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Cursair</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="app-container">
+        <div class="ticket-card">
+            <div class="info-panel">
+                <div class="logo">
+                    <img src="assets/foreground.png" alt="Cursair Logo" class="logo-img" width="28" height="28">
+                    <h1>Cursair</h1>
+                </div>
+                <h2>Welcome to Cursair</h2>
+                <p class="subtitle">Your mobile device is about to become a powerful wireless controller for this computer.</p>
+                
+                <div class="instructions">
+                    <h4>How to Connect:</h4>
+                    <ol>
+                        <li>Open the Cursair app on your phone.</li>
+                        <li>Tap the 'Scan' button.</li>
+                        <li>Point your phone's camera at the QR code on the right.</li>
+                    </ol>
+                </div>
+            </div>
+            <div class="action-panel">
+                <div id="connect-view" class="view">
+                    <div class="qr-container">
+                        <canvas id="qr-canvas"></canvas>
+                    </div>
+                    <p class="action-footer">Waiting for connection...</p>
+                </div>
+                <div id="connected-view" class="view" style="display: none;">
+                    <img src="assets/foreground.png" alt="Cursair Logo" class="logo-img" width="96" height="96" class="connected-icon">
+                    <h3>Connection Established!</h3>
+                    <p id="connected-ip-text">Your mobile device is now active.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
