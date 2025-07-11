@@ -1,6 +1,8 @@
 <div align="center">
-  <img src="assets/foreground.png" alt="Cursair Logo" width="60" height="60" style="vertical-align: middle;">
-  <span style="font-family: 'Poppins', sans-serif; font-size: 48px; font-weight: 700; color: #EDE0D4; vertical-align: middle; margin-left: 12px;">Cursair</span>
+  <img src="assets/foreground.png" alt="Cursair Logo" width="60" height="60" align="center">
+  
+  <!-- Title with intended styling: font-family: Poppins, font-size: 48px, color: #EDE0D4 -->
+  <h1 align="center">𝗖𝘂𝗿𝘀𝗮𝗶𝗿</h1>
 
   <p align="center">
     Transform your smartphone into a wireless mouse with secure, low-latency control
