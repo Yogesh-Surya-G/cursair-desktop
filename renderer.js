@@ -42,6 +42,17 @@ ipcRenderer.on('device-connected', (event, ipAddress) => {
     ipText.textContent = `Connected to device at ${ipAddress}.`;
 });
 
+// Listen for device disconnection
+ipcRenderer.on('device-disconnected', (event, ipAddress) => {
+    console.log(`Device disconnected: ${ipAddress}`);
+    const connectView = document.getElementById('connect-view');
+    const connectedView = document.getElementById('connected-view');
+
+    connectedView.style.display = 'none';
+    connectView.style.display = 'flex';
+    generateQrCode(); // Regenerate QR code for new connection
+});
+
 // When the DOM is fully loaded, the 'set-theme' event from main.js 
 // will trigger the first QR code generation.
 window.addEventListener('DOMContentLoaded', () => {

@@ -64,10 +64,26 @@ function createWindow() {
         mainWindow.setBackgroundColor(nativeTheme.shouldUseDarkColors ? '#121212' : '#F0F0F0');
     });
 
-    // Start server and get the generated password
-    serverPassword = startServer((ipAddress) => {
+    // Handle device connection and disconnection events
+    const handleDeviceConnection = (event, ipAddress) => {
         mainWindow.webContents.send('device-connected', ipAddress);
-    });
+    };
+
+    const handleDeviceDisconnection = (event, ipAddress) => {
+        mainWindow.webContents.send('device-disconnected', ipAddress);
+    };
+
+    // Start server and get the generated password
+    serverPassword = startServer(
+        // Connection callback
+        (ipAddress) => {
+            mainWindow.webContents.send('device-connected', ipAddress);
+        },
+        // Disconnection callback
+        (ipAddress) => {
+            mainWindow.webContents.send('device-disconnected', ipAddress);
+        }
+    );
 }
 
 app.whenReady().then(() => {

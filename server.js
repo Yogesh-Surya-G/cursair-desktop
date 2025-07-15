@@ -5,7 +5,7 @@ const { generatePassword } = require('./utils');
 
 let serverPassword;
 
-function startServer(onConnectCallback) {
+function startServer(onConnectCallback, onDisconnectCallback) {
   const whitelist = [];
   serverPassword = generatePassword(); 
 
@@ -18,14 +18,37 @@ function startServer(onConnectCallback) {
     try {
       const object = JSON.parse(msg.toString());
 
-      if (whitelist.find(ip => ip === rinfo.address)) {
-        // Device is whitelisted, move the mouse
-        if (object.dx !== undefined && object.dy !== undefined) {
-           const currentPos = robot.getMousePos();
-           robot.moveMouse(currentPos.x + object.dx, currentPos.y + object.dy);
+      if (whitelist.includes(rinfo.address)) {
+        // Handle events for whitelisted devices
+        switch(object.event) {
+          case "stream":
+            if (object.dx !== undefined && object.dy !== undefined) {
+              const currentPos = robot.getMousePos();
+              robot.moveMouse(currentPos.x + object.dx, currentPos.y + object.dy);
+            }
+            break;
+          case "lmb":
+            robot.mouseClick('left');
+            break;
+          case "rmb":
+            robot.mouseClick('right');
+            break;
+          case "mmb":
+            robot.mouseClick('middle');
+            break;
+          case "disconnect":
+            console.log(`Device ${rinfo.address} disconnected.`);
+            const index = whitelist.indexOf(rinfo.address);
+            if (index > -1) {
+              whitelist.splice(index, 1);
+              if (onDisconnectCallback) {
+                onDisconnectCallback(rinfo.address);
+              }
+            }
+            break;
         }
       } else {
-        // Device is not whitelisted, check password
+        // Handle authentication for non-whitelisted devices
         if (object.password === serverPassword) {
           console.log(`Password correct. Adding ${rinfo.address} to whitelist.`);
           whitelist.push(rinfo.address);
@@ -37,10 +60,9 @@ function startServer(onConnectCallback) {
           
           const message = Buffer.from("CONNECTED");
           server.send(message, rinfo.port, rinfo.address, (err) => {
-              if (err) console.error('Error sending confirmation:', err);
-              else console.log(`Connection confirmation sent to ${rinfo.address}`);
+            if (err) console.error('Error sending confirmation:', err);
+            else console.log(`Connection confirmation sent to ${rinfo.address}`);
           });
-
         } else {
           console.log(`Invalid password attempt from ${rinfo.address}`);
         }
