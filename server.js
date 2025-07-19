@@ -2,8 +2,52 @@ const dgram = require('dgram');
 const server = dgram.createSocket('udp4');
 const robot = require('robotjs');
 const { generatePassword } = require('./utils');
+const path = require('path');
+const { spawn } = require('child_process');
+
+
 
 let serverPassword;
+
+
+function getPythonPath() {
+    // Check if we're in development or production
+    const isDev = process.env.NODE_ENV === 'development';
+    
+    if (isDev) {
+        return 'python';  // Use system Python in development
+    } else {
+        // Use bundled Python in production
+        const resourcesPath = process.resourcesPath;
+        return path.join(resourcesPath, 'python-dist', 'python.exe');
+    }
+}
+
+function getScrollScriptPath() {
+    const isDev = process.env.NODE_ENV === 'development';
+    
+    if (isDev) {
+        return path.join(__dirname, 'scroll.py');
+    } else {
+        const resourcesPath = process.resourcesPath;
+        return path.join(resourcesPath, 'scroll.py');
+    }
+}
+
+function sendMouseWheelScroll(scrollDistance) {
+    const pythonPath = 'python';
+    const scriptPath = './scroll.py';
+    
+    // Pass the raw distance to Python for more precise control
+    const pythonProcess = spawn(pythonPath, [scriptPath, scrollDistance.toString()]);
+    
+    pythonProcess.stderr.on('data', (data) => {
+        console.error(`Python error: ${data}`);
+    });
+}
+
+
+
 
 function startServer(onConnectCallback, onDisconnectCallback) {
   const whitelist = [];
@@ -40,7 +84,8 @@ function startServer(onConnectCallback, onDisconnectCallback) {
             break;
           case "scroll":
             if (object.dist !== undefined) {
-               //TODO
+                const scrollDistance = object.dist;
+                sendMouseWheelScroll(scrollDistance);
             }
             break;
           case "disconnect":
