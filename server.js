@@ -17,7 +17,9 @@ function startServer(onConnectCallback, onDisconnectCallback) {
   server.on('message', (msg, rinfo) => {
     try {
       const object = JSON.parse(msg.toString());
-
+      if(object.event !== "stream") {
+        console.log(`Received message from ${rinfo.address}:${rinfo.port} - ${JSON.stringify(object)}`);
+      }
       if (whitelist.includes(rinfo.address)) {
         // Handle events for whitelisted devices
         switch(object.event) {
@@ -35,6 +37,11 @@ function startServer(onConnectCallback, onDisconnectCallback) {
             break;
           case "mmb":
             robot.mouseClick('middle');
+            break;
+          case "scroll":
+            if (object.dist !== undefined) {
+               //TODO
+            }
             break;
           case "disconnect":
             console.log(`Device ${rinfo.address} disconnected.`);
