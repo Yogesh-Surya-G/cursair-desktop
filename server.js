@@ -82,6 +82,22 @@ function startServer(onConnectCallback, onDisconnectCallback) {
           case "mmb":
             robot.mouseClick('middle');
             break;
+          case 'lmb_down':
+              robot.mouseToggle('down', 'left');
+              console.log('Left mouse button held down');
+              break;
+          case 'rmb_down':
+              robot.mouseToggle('down', 'right');
+              console.log('Right mouse button held down');
+              break;
+          case 'lmb_up':
+              robot.mouseToggle('up', 'left');
+              console.log('Left mouse button released');
+              break;
+          case 'rmb_up':
+              robot.mouseToggle('up', 'right');
+              console.log('Right mouse button released');
+              break;
           case "scroll":
             if (object.dist !== undefined) {
                 const scrollDistance = object.dist;
