@@ -9,8 +9,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron .",
-     "pack": "electron-builder --dir",
-     "dist": "electron-builder"
+    "prepack": "python setup_python.py",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
   },
   "devDependencies": {
     "electron": "^37.2.0",
@@ -33,8 +34,30 @@
     },
     "linux": {
       "icon": "assets/icons/linux/png/1024x1024.png"
+    },
+    "files": [
+    "**/*",
+    "!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}",
+    "!**/node_modules/*/{test,__tests__,tests,powered-test,example,examples}",
+    "!**/node_modules/*.d.ts",
+    "!**/node_modules/.bin",
+    "scroll.py"
+    ],
+     "extraResources": [
+    {
+      "from": "scroll.py",
+      "to": "scroll.py"
+    },
+    {
+      "from": "python-dist/",
+      "to": "python-dist/",
+      "filter": ["**/*", "**/pynput/**/*"]
     }
+  ],
+  "asarUnpack": [
+    "python-dist/python-3.13.5-embed-amd64/**/*",
+    "python-dist/pynput/**/*",
+    "scroll.py"
+   ]
   }
-
-
 }

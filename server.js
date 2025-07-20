@@ -11,17 +11,16 @@ let serverPassword;
 
 
 function getPythonPath() {
-    // Check if we're in development or production
     const isDev = process.env.NODE_ENV === 'development';
     
     if (isDev) {
-        return 'python';  // Use system Python in development
+        return 'python';
     } else {
-        // Use bundled Python in production
         const resourcesPath = process.resourcesPath;
         return path.join(resourcesPath, 'python-dist', 'python.exe');
     }
 }
+
 
 function getScrollScriptPath() {
     const isDev = process.env.NODE_ENV === 'development';
@@ -35,16 +34,25 @@ function getScrollScriptPath() {
 }
 
 function sendMouseWheelScroll(scrollDistance) {
-    const pythonPath = 'python';
-    const scriptPath = './scroll.py';
+    const pythonPath = getPythonPath();       
+    const scriptPath = getScrollScriptPath(); 
     
-    // Pass the raw distance to Python for more precise control
     const pythonProcess = spawn(pythonPath, [scriptPath, scrollDistance.toString()]);
     
     pythonProcess.stderr.on('data', (data) => {
         console.error(`Python error: ${data}`);
     });
+    
+    // Add these for better debugging
+    pythonProcess.stdout.on('data', (data) => {
+        console.log(`Python output: ${data}`);
+    });
+    
+    pythonProcess.on('error', (error) => {
+        console.error(`Process error: ${error.message}`);
+    });
 }
+
 
 
 
@@ -84,19 +92,15 @@ function startServer(onConnectCallback, onDisconnectCallback) {
             break;
           case 'lmb_down':
               robot.mouseToggle('down', 'left');
-              console.log('Left mouse button held down');
               break;
           case 'rmb_down':
               robot.mouseToggle('down', 'right');
-              console.log('Right mouse button held down');
               break;
           case 'lmb_up':
               robot.mouseToggle('up', 'left');
-              console.log('Left mouse button released');
               break;
           case 'rmb_up':
               robot.mouseToggle('up', 'right');
-              console.log('Right mouse button released');
               break;
           case "scroll":
             if (object.dist !== undefined) {
